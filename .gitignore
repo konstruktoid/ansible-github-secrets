@@ -6,6 +6,7 @@
 .tox
 .vagrant
 .vagrant/
+.venv
 .yamllint
 __pycache__
 drafts/*
