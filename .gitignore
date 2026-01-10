@@ -1,0 +1,12 @@
+.ansible
+.cache
+.env.yml
+.scannerwork
+.sonar
+.tox
+.vagrant
+.vagrant/
+.yamllint
+__pycache__
+drafts/*
+hosts

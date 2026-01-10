@@ -1,0 +1,33 @@
+---
+- name: Test playbook
+  hosts: localhost
+  any_errors_fatal: true
+  gather_facts: false
+  tasks:
+    - name: Add Github secret
+      github_secrets:
+        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        repository: "disruella"
+        organization: "konstruktoid"
+        key: "TEST_SECRET"
+        value: "bob"
+        state: "present"
+      register: add_result
+
+    - name: Debug add result
+      ansible.builtin.debug:
+        var: add_result
+
+    - name: Delete Github secret
+      github_secrets:
+        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        repository: "disruella"
+        organization: "konstruktoid"
+        key: "TEST_SECRET"
+        state: "absent"
+      register: delete_result
+
+    - name: Debug delete result
+      ansible.builtin.debug:
+        var: delete_result
+
