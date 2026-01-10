@@ -24,4 +24,6 @@ jobs:
           python3 -m pip install --user -U jmespath passlib
 
       - name: Lint Ansible Playbook
+        env:
+          ANSIBLE_LIBRARY: "${GITHUB_WORKSPACE}"
         uses: ansible/ansible-lint@main

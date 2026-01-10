@@ -30,4 +30,3 @@
     - name: Debug delete result
       ansible.builtin.debug:
         var: delete_result
-
