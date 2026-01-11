@@ -18,6 +18,7 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv venv
           source .venv/bin/activate
+          uv pip install -U ansible ansible-lint
           uv pip install -U -r requirements.txt
 
       - name: Python linting
