@@ -21,6 +21,6 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv venv
           source .venv/bin/activate
-          uv pip install -U ansible ansible-lint passlib
+          uv pip install -U ansible
           uv pip install -U -r requirements.txt
-          ansible-playbook -i 'localhost,' -c local playbook.yml
+          ansible-playbook -vvvv -i 'localhost,' -c local playbook.yml
