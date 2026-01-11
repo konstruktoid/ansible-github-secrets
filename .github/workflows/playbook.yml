@@ -15,6 +15,7 @@ jobs:
       - name: Install uv and run playbook
         env:
           ANSIBLE_LIBRARY: "${GITHUB_WORKSPACE}"
+          ANSIBLE_TOKEN: "${{ secrets.ANSIBLE }}"
         run: |
           sudo apt-get update
           curl -LsSf https://astral.sh/uv/install.sh | sh

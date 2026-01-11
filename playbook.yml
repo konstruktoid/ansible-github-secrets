@@ -6,7 +6,7 @@
   tasks:
     - name: Add Github secret
       github_secrets:
-        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         key: "TEST_SECRET"
@@ -20,7 +20,7 @@
 
     - name: Delete Github secret
       github_secrets:
-        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         key: "TEST_SECRET"
