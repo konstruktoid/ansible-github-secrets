@@ -7,8 +7,8 @@
     - name: Add Github secret
       github_secrets:
         token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
-        repository: "disruella"
-        organization: "konstruktoid"
+        repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
+        organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         key: "TEST_SECRET"
         value: "bob"
         state: "present"
@@ -21,8 +21,8 @@
     - name: Delete Github secret
       github_secrets:
         token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
-        repository: "disruella"
-        organization: "konstruktoid"
+        repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
+        organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         key: "TEST_SECRET"
         state: "absent"
       register: delete_result

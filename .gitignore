@@ -1,6 +1,7 @@
 .ansible
 .cache
 .env.yml
+.ruff_cache
 .scannerwork
 .sonar
 .tox

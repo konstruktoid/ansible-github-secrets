@@ -17,21 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get --assume-yes --no-install-recommends install python3-pip
-          python3 -m pip install --user -U jmespath passlib
-
-      - name: Install system dependencies
+      - name: Install uv and run ansible-lint
+        env:
+          ANSIBLE_LIBRARY: "${GITHUB_WORKSPACE}"
         run: |
           sudo apt-get update
           curl -LsSf https://astral.sh/uv/install.sh | sh
           uv venv
           source .venv/bin/activate
+          uv pip install -U ansible ansible-lint passlib
           uv pip install -U -r requirements.txt
-
-      - name: Lint Ansible Playbook
-        env:
-          ANSIBLE_LIBRARY: "${GITHUB_WORKSPACE}"
-        uses: ansible/ansible-lint@main
+          ansible-lint .
