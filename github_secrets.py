@@ -14,7 +14,7 @@ DOCUMENTATION = r"""
 module: github_secrets
 short_description: Manage GitHub repository or organization secrets
 description:
-  - Create, updates, or deletes secrets in a GitHub repository or organization.
+  - Create, update, or delete secrets in a GitHub repository or organization.
 author:
   - Thomas Sjögren (@konstruktoid)
 attributes:
