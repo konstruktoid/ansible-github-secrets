@@ -43,6 +43,12 @@ options:
         - The value of the secret. Required when O(state=present).
     type: str
     required: false
+  visibility:
+    description:
+        - The visibility of the secret when set at the organization level.
+        - Required when O(state=present) and O(repository) is not set.
+    type: str
+    choices: ["all", "private", "selected"]
   state:
     description:
         - The desired state of the secret.
@@ -159,6 +165,9 @@ def upsert_secret(
         "key_id": key_id,
     }
 
+    if not repository and module.params.get("visibility"):
+        payload["visibility"] = module.params["visibility"]
+
     _, info = fetch_url(
         module,
         url,
@@ -212,6 +221,11 @@ def main() -> None:
         "repository": {"type": "str", "aliases": ["repo"], "required": False},
         "key": {"type": "str", "required": False},
         "value": {"type": "str", "required": False, "no_log": True},
+        "visibility": {
+            "type": "str",
+            "choices": ["all", "private", "selected"],
+            "required": False,
+        },
         "state": {
             "type": "str",
             "choices": ["present", "absent"],
@@ -230,6 +244,7 @@ def main() -> None:
     repository: str | None = module.params["repository"]
     key: str | None = module.params["key"]
     value: str | None = module.params["value"]
+    visibility: str | None = module.params.get("visibility")
     state: str = module.params["state"]
     api_url: str = module.params["api_url"]
     token: str = module.params["token"]
@@ -238,6 +253,23 @@ def main() -> None:
         module.fail_json(
             msg="Invalid parameters",
             details="When 'value' is provided, 'key' must also be set",
+            params=module.params,
+        )
+
+    if state == "present" and not value:
+        module.fail_json(
+            msg="Invalid parameters",
+            details="When state is 'present', 'value' must be provided",
+            params=module.params,
+        )
+
+    if state == "present" and not repository and not visibility:
+        module.fail_json(
+            msg="Invalid parameters",
+            details=(
+                "When state is 'present' and 'repository' is not set, "
+                "'visibility' must be provided"
+            ),
             params=module.params,
         )
 
