@@ -18,6 +18,18 @@
       ansible.builtin.debug:
         var: add_result
 
+    - name: List Github secrets
+      github_secrets:
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
+        repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
+        organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
+        list_only: true
+      register: list_result
+
+    - name: Debug list result
+      ansible.builtin.debug:
+        var: list_result
+
     - name: Delete Github secret
       github_secrets:
         token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
@@ -30,3 +42,15 @@
     - name: Debug delete result
       ansible.builtin.debug:
         var: delete_result
+
+    - name: List Github secrets
+      github_secrets:
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
+        repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
+        organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
+        list_only: true
+      register: list_result
+
+    - name: Debug list result
+      ansible.builtin.debug:
+        var: list_result

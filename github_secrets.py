@@ -55,6 +55,11 @@ options:
     type: str
     choices: ["present", "absent"]
     default: "present"
+  list_only:
+    description:
+        - If C(true), the module will only list available secrets.
+    type: bool
+    default: false
   api_url:
     description:
       - The base URL for the GitHub API.
@@ -210,6 +215,38 @@ def delete_secret(
     return info
 
 
+def list_secrets(
+    module: AnsibleModule,
+    api_url: str,
+    headers: dict[str, str],
+    organization: str,
+    repository: str | None,
+) -> dict[str, Any]:
+    """List GitHub Actions secrets."""
+    if repository:
+        url = f"{api_url}/repos/{organization}/{repository}/actions/secrets"
+    else:
+        url = f"{api_url}/orgs/{organization}/actions/secrets"
+
+    resp, info = fetch_url(
+        module,
+        url,
+        headers=headers,
+        method="GET",
+    )
+
+    list_response_code = 200
+    if info["status"] != list_response_code:
+        module.fail_json(msg=f"Failed to list secrets: {info}")
+
+    body = resp.read()
+    return {
+        "response": resp,
+        "data": json.loads(body),
+        "info": info,
+    }
+
+
 def main() -> None:
     """Ansible module entry point."""
     argument_spec = {
@@ -231,6 +268,7 @@ def main() -> None:
             "choices": ["present", "absent"],
             "default": "present",
         },
+        "list_only": {"type": "bool", "default": False},
         "api_url": {"type": "str", "default": "https://api.github.com"},
         "token": {"type": "str", "required": True, "no_log": True},
     }
@@ -246,6 +284,7 @@ def main() -> None:
     value: str | None = module.params["value"]
     visibility: str | None = module.params.get("visibility")
     state: str = module.params["state"]
+    list_only: bool = module.params["list_only"]
     api_url: str = module.params["api_url"]
     token: str = module.params["token"]
 
@@ -256,14 +295,14 @@ def main() -> None:
             params=module.params,
         )
 
-    if state == "present" and not value:
+    if state == "present" and not value and not list_only:
         module.fail_json(
             msg="Invalid parameters",
             details="When state is 'present', 'value' must be provided",
             params=module.params,
         )
 
-    if state == "present" and not repository and not visibility:
+    if state == "present" and not repository and not visibility and not list_only:
         module.fail_json(
             msg="Invalid parameters",
             details=(
@@ -281,17 +320,35 @@ def main() -> None:
         "Content-Type": "application/json",
     }
 
-    key_id, public_key = get_public_key(
-        module,
-        api_url,
-        headers,
-        organization,
-        repository,
-    )
+    if list_only:
+        secrets = list_secrets(
+            module,
+            api_url,
+            headers,
+            organization,
+            repository,
+        )
 
-    encrypted_value = encrypt_secret(public_key, value) if value else None
+        result["changed"] = False
+        result.update(
+            result={
+                "status": secrets["info"]["status"],
+                "msg": secrets["data"]["secrets"],
+                "response": "Secrets listed",
+            },
+        )
 
-    if state == "present":
+    if state == "present" and not list_only:
+        key_id, public_key = get_public_key(
+            module,
+            api_url,
+            headers,
+            organization,
+            repository,
+        )
+
+        encrypted_value = encrypt_secret(public_key, value) if value else None
+
         upsert = upsert_secret(
             module,
             api_url,
@@ -318,7 +375,8 @@ def main() -> None:
                 "response": response_msg,
             },
         )
-    else:
+
+    if state == "absent" and not list_only:
         delete = delete_secret(
             module,
             api_url,
