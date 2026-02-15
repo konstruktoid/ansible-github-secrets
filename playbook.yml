@@ -20,7 +20,7 @@
 
     - name: List Github secrets
       github_secrets:
-        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         list_only: true
@@ -45,7 +45,7 @@
 
     - name: List Github secrets
       github_secrets:
-        token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+        token: "{{ lookup('env', 'ANSIBLE_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
         list_only: true
