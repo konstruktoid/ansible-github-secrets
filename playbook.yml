@@ -23,7 +23,7 @@
         token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
-        list: true
+        list_only: true
       register: list_result
 
     - name: Debug list result
@@ -48,7 +48,7 @@
         token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
         repository: "{{ lookup('ansible.builtin.env', 'GITHUB_REPOSITORY').split('/')[1] }}"
         organization: "{{ lookup('env', 'GITHUB_REPOSITORY_OWNER') }}"
-        list: true
+        list_only: true
       register: list_result
 
     - name: Debug list result
