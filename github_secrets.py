@@ -327,7 +327,6 @@ def main() -> None:
             headers,
             organization,
             repository,
-            key,
         )
 
         result["changed"] = False
