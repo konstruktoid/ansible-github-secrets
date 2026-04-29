@@ -1,5 +1,7 @@
 # ansible-github-secrets
 
+> Merged. See [https://docs.ansible.com/projects/ansible/latest/collections/community/general/github_secrets_module.html](https://docs.ansible.com/projects/ansible/latest/collections/community/general/github_secrets_module.html).
+
 An Ansible module to manage GitHub secrets.
 
 ## Example Usage
